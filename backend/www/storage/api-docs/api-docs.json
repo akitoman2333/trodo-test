@@ -1,0 +1,293 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Test API Documentation",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:89/api/v1"
+        }
+    ],
+    "paths": {
+        "/currencies/{fromCurrency}/{toCurrency}": {
+            "get": {
+                "tags": [
+                    "Currencies"
+                ],
+                "summary": "Get the currencies from one currency to another.",
+                "description": "Retrieves the currencies from the specified source currency to the specified target currency.",
+                "operationId": "3776c2082ec0bc35868933d52384f7ac",
+                "parameters": [
+                    {
+                        "name": "fromCurrency",
+                        "in": "path",
+                        "description": "The source currency.",
+                        "required": true,
+                        "example": "EUR"
+                    },
+                    {
+                        "name": "toCurrency",
+                        "in": "path",
+                        "description": "The target currency.",
+                        "required": true,
+                        "example": "USD"
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number.",
+                        "required": true,
+                        "example": 1
+                    },
+                    {
+                        "name": "order",
+                        "in": "query",
+                        "description": "Sort by creation date.",
+                        "required": true,
+                        "example": "asc"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/auth/register": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Store a newly created resource in storage.",
+                "operationId": "b590ed773da08ced157b44863a096826",
+                "requestBody": {
+                    "request": "RegisterApiUser",
+                    "description": "User request fields",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "description": "User's name ['required', 'string', 'max:255']",
+                                        "type": "string",
+                                        "example": "Luke"
+                                    },
+                                    "email": {
+                                        "description": "The email used by the user ['required', 'email']",
+                                        "type": "string",
+                                        "example": "email@example.com"
+                                    },
+                                    "password": {
+                                        "description": "User password ['required', 'string', 'min:8', 'max:255']",
+                                        "type": "string",
+                                        "example": "password"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful response with the result of the request",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "An error response.",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation errors.",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/auth/login": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Get a JWT via given credentials.",
+                "operationId": "c10e34bcaa8516b48e91b127f69ea77f",
+                "requestBody": {
+                    "request": "LoginRequest",
+                    "description": "Auth request fields",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "example": "admin@gmail.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "password"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success auth response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "User not authorized. Wrong login or password.",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation errors.",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/user": {
+            "get": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Get the authenticated User.",
+                "operationId": "267cd5c4ad1e31a4dc7dda45d0515131",
+                "responses": {
+                    "200": {
+                        "description": "Successful response with user data",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/auth/logout": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Log the user out (Invalidate the token).",
+                "operationId": "8b44f2928b065a6c12bd6fd996acdf6c",
+                "responses": {
+                    "200": {
+                        "description": "Successful logout response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/auth/refresh": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Refresh a token.",
+                "operationId": "d3c4a57755972c48bf052fbb93ad1b58",
+                "responses": {
+                    "200": {
+                        "description": "Successful response with a new token.",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "responses": {
+            "Unauthorized": {
+                "description": "If no token..."
+            }
+        },
+        "securitySchemes": {
+            "Bearer": {
+                "type": "http",
+                "description": "Login with login and password to get the authentication token",
+                "name": "Token based Based",
+                "in": "header",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Authentication",
+            "description": ""
+        }
+    ]
+}

@@ -1,0 +1,16 @@
+version: "3.4"
+services:
+  vite_docker:
+    image: node:alpine
+    container_name: front-test-app
+    entrypoint: /bin/sh
+    ports:
+      - 8000:8000
+    working_dir: /srv/app
+    volumes:
+      - type: bind
+        source: ./www/
+        target: /srv/app
+    tty: true
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'

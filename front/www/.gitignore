@@ -1,0 +1,10 @@
+node_modules
+.DS_Store
+dist
+dist-ssr
+*.local
+/.idea/.gitignore
+/.idea/modules.xml
+/.idea/php.xml
+/.idea/vcs.xml
+/.idea/www.iml

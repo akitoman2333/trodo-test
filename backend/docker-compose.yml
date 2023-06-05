@@ -1,0 +1,92 @@
+version: '3'
+services:
+    #PHP Service
+    app:
+        build:
+            context: .
+            dockerfile: docker/Dockerfile
+        image: digitalocean.com/php
+        container_name: apptest-app
+        tty: true
+        environment:
+            SERVICE_NAME: app
+            SERVICE_TAGS: dev
+        working_dir: /var/www/html
+        volumes:
+            - ./www:/var/www/html
+            - ./docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+        networks:
+            - app-network
+
+    #Nginx Service
+    webserver:
+        image: nginx:alpine
+        container_name: apptest-webserver
+        tty: true
+        ports:
+            - "89:80"
+            - "444:443"
+        volumes:
+            - ./www:/var/www/html
+            - ./docker/nginx/conf.d/:/etc/nginx/conf.d/
+        networks:
+            - app-network
+
+    #PhpMyAdmin Service
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        container_name: apptest-phpmyadmin
+        environment:
+            - MYSQL_ROOT_PASSWORD=root
+            - PMA_HOST=db
+            - UPLOAD_LIMIT=1024M
+        depends_on:
+            - db
+        links:
+            - db
+        ports:
+            - "8089:80"
+        networks:
+            - app-network
+
+
+        #MySQL Service
+    db:
+        image: mysql:8.0.0
+        container_name: apptest-db
+        tty: true
+        ports:
+            - "3301:3306"
+        command: --default-authentication-plugin=mysql_native_password
+        environment:
+            MYSQL_DATABASE: apptest
+            MYSQL_ROOT_PASSWORD: root
+            SERVICE_TAGS: dev
+            SERVICE_NAME: mysql
+        volumes:
+            - ./data/mysql:/var/lib/mysql/
+            - ./docker/mysql/my.cnf:/etc/mysql/my.cnf
+        networks:
+            - app-network
+
+    #mailhog Service
+    mailhog:
+        image: mailhog/mailhog:latest
+        container_name: apptest-mailhog
+        logging:
+            driver: 'none'
+        ports:
+            - "1026:1025"
+            - "8026:8025"
+        networks:
+            - app-network
+
+#Docker Networks
+networks:
+    app-network:
+        driver: bridge
+        
+#Volumes
+volumes:
+    dbdata:
+        driver: local
